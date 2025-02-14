@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Pré-Checklist</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <!-- Adicionando o FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+    <style>
+      body {
+  font-family: Arial;
+}
+*,::before,::after {
+  box-sizing: border-box;
+  margin:0;
+  padding:0;
+}
+h1,h2,h3,h4 {
+      color: #505156;
+}
+/* Ajuste da imagem para parecer uma marca d'água */
+.pilar-imagem {
+    width: 30px; /* Reduz o tamanho */
+    height: auto;
+    opacity: 0.5; /* Deixa a imagem mais transparente */
+    position: absolute;
+    top: 5px; /* Pequeno ajuste no topo */
+    left: 5px; /* Pequeno ajuste na esquerda */
+    z-index: 1; /* Garante que fique sobreposta ao fundo */
+    pointer-events: none; /* Evita que a imagem atrapalhe cliques */
+}
+
+//Config. da caixa de texto "RE do Auditado":
+
+/* Estilização da caixa de entrada */
+.audit-re-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.audit-re-container label{
+  font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.audit-re-container input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+}
+
+//Config. da caixa de texto "Área auditada":
+
+/* Estilização da caixa de entrada */
+.area-auditada {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.area-auditada label{
+  font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.area-auditada input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: 0.3s;
+}
+
+/* Efeito ao focar no campo */
+/*.audit-container input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}*/
+
+
+/* Ajuste da imagem para parecer uma marca d'água */
+.pilar-imagem1 {
+    width: 60px; /* Reduz o tamanho */
+    height: auto;
+    opacity: 1; /* Deixa a imagem mais transparente */
+    padding: 5px;
+    //position: absolute;
+    top: 15px; /* Pequeno ajuste no topo */
+    left: 15px; /* Pequeno ajuste na esquerda */
+    z-index: 1; /* Garante que fique sobreposta ao fundo */
+    pointer-events: none; /* Evita que a imagem atrapalhe cliques */
+}
+
+
+.pilar-imagem2 {
+    width: 120px; /* Reduz o tamanho */
+    height: auto;
+    opacity: 1; /* Deixa a imagem mais transparente */
+    //position: absolute;
+    //top: 15px; /* Pequeno ajuste no topo */
+    //left: 15px; /* Pequeno ajuste na esquerda */
+    z-index: 1; /* Garante que fique sobreposta ao fundo */
+    //position: absolute;
+    //top: 15px; /* Pequeno ajuste no topo */
+    //left: 15px; /* Pequeno ajuste na esquerda */
+    z-index: 1; /* Garante que fique sobreposta ao fundo */
+    pointer-events: none; /* Evita que a imagem atrapalhe cliques */
+}
+
+
+
+
+/* Estiliza o contêiner da pergunta */
+.pergunta-container {
+    position: relative; /* Necessário para posicionamento absoluto da imagem */
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    border: 1px solid #ddd;
+}
+
+
+
+
+/* Container geral de cada pergunta */
+.pergunta-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+
+.pergunta-container:hover {
+  transform: translateY(-5px);
+}
+
+
+/* Texto da pergunta */
+.pergunta-texto {
+  font-size: 16px;
+  color: #333;
+  text-align: center; /* Centraliza a pergunta */
+  font-weight: 600;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+
+/* Container das opções Sim/Não */
+.opcoes {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 10px;
+}
+
+
+/* Estilo de cada opção (Sim / Não) */
+.opcoes label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+
+/* Efeito de hover nas opções */
+.opcoes label:hover {
+  color: #007bff;
+}
+
+
+/* Estilo do botão de rádio */
+.opcoes input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+
+/* Efeito de foco no botão de rádio */
+.opcoes input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+
+/* Adicionando um fundo com borda ao passar o mouse sobre o container */
+.pergunta-container:hover {
+  background-color: #e7f3ff;
+  border-color: #cce4ff;
+}
+
+
+
+
+a {
+  text-decoration:none;
+}
+form#ingr {
+    background: #ffffffc2;
+    padding: 2em 4em;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px #00000017;
+    display: flex;
+    flex-flow: column;
+}
+form#ingr a {
+    display: inline;
+    border: 1.5px solid #2159cc;
+    color: #1b43b0;
+    text-decoration: none;
+    border-radius: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: .5em;
+    transition: .3s;
+    margin: 1em 0 0;
+}
+form#ingr a:hover {
+    background: #ffffff63;
+    box-shadow: 0 2px 6px #00000030;
+}
+#fingerprintact {
+    position: absolute;
+    bottom: 1em;
+    color: white;
+    background: #2c33bb;
+    padding: 1em 1.3em;
+}
+#fingerprint {
+  display: none;
+  position: fixed;
+  top:0;
+  left: 0;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url(gym_bg.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  width:100vw;
+  height: 100vh;
+}
+#fingerprint:target {
+  display:flex;
+}
+#fingerprint:target + * {
+  display:none;
+}
+#fingerprint .contenido {
+    background: #ffffffc2;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2em 3em;
+    border-radius: 3px;
+}
+.dedo {
+  max-width: 10em;
+  opacity:.7;
+  padding: 2em 0 0;
+}
+#fingerprint span {
+  display: none
+}
+#fingerprint.exito span {
+  display: block;
+  color: white;
+  background: #26b926;
+  border-radius: 100%;
+}
+
+
+.maxw {
+  max-width:65em;
+  margin: 0 auto;
+  //padding: 0 1em;
+  display: flex;
+}
+
+
+header#cab {
+  background:#3865a6;
+}
+h1 {
+  color:white
+}
+header#cab > div {
+  justify-content: space-between;
+  align-items: center;
+  padding:0.1em;
+}
+header#cab nav a {
+  color:white;
+  fill:#ffffffcf;
+  padding: 0 .5em;
+}
+
+
+aside {
+    width: 20%
+}
+aside nav {
+    padding: 2em 0;
+}
+aside nav a {
+      display: flex;
+      padding: .5em 0 .5em .8em;
+      color: #6f6f6f;
+      font-weight: 600;
+      fill: #737373;
+      align-items: center;
+}
+aside nav a:hover, aside nav a:focus {
+    background: white;
+    fill: #1394c9;
+    color: #484848;
+}
+aside nav a.activo {
+  background: white;
+  fill: #1394c9;
+  color: #484848;
+  box-shadow: 0.3em 0 inset #1394c9;
+}
+aside nav a svg {
+    margin-right: .8em;
+}
+
+
+.corpo {
+  padding: 1em 1.5em;
+  width: 100%;
+  background: white;
+  box-shadow: 0 10px 25px #00000003;
+}
+.corpo p {
+    display:flex;
+}
+
+
+/****BOTONES****/
+a[class^='boton'], a[class*=' boton'],
+a[class^='boton']:active, a[class*=' boton']:active,
+input[type="submit"],input[type="submit"]:active {
+  padding: .7em 1.5em;
+  border-width: 2px;
+  margin: 1em .2em;
+  border-radius: 100px;
+  font-weight: 600;
+  opacity:1;
+  font-size:1rem;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  transition: all .15s ease;
+}
+a[class^='boton']:hover, a[class*=' boton']:hover,
+a[class^='boton']:focus, a[class*=' boton']:focus,
+input[type="submit"]:hover,input[type="submit"]:focus {
+  transform:translateY(-1px);
+  box-shadow:0 3px 6px rgba(0,0,0,.08);
+  opacity: .8;
+  cursor:pointer;
+}
+.boton_ok {
+    background: #1394c9;
+    border-color: #1394c9;
+    color: white;
+    text-shadow: 0 2px 4px #00000020;
+}
+.boton_ok svg {
+  fill:white
+}
+.boton_pas {
+    border-color: #c7c7c7;
+    color: white;
+    background: gray;
+}
+a[class^='boton'] svg, a[class*=' boton'] svg {
+  margin-right: .5em;
+  margin-left: -.7em;
+}
+.link, link:active {
+    color: #0e86b7;
+    font-weight: 600;
+    box-shadow: 0 1.5px;
+}
+.link:hover, .link:focus {
+  opacity:.7
+}
+ul li {
+  list-style: none;
+}
+/***TABLAS***/
+table {
+    width: 100%;
+    margin: 1em 0;
+    background: white;
+}
+th, td {
+  padding: .5em .8em;
+  text-align:left;
+}
+th {
+    background: #d0d0d3;
+    color: #404040;
+    text-transform: uppercase;
+    font-size: .9em;
+}
+td {
+    width: min-content;
+}
+table, th, td {
+    border-bottom: 1px solid lightgrey;
+    border-collapse: collapse;
+}
+table tr a {
+  opacity:0;
+  box-shadow:none!important;
+  transition:.2s;
+}
+table tr:hover {
+  background: #f8f8f8;
+  transition: .2s;
+}
+table tr:hover a {
+  opacity:1;
+}
+table .importe {
+  text-align: right;
+  width:5em
+}
+table .options{
+  text-align: center;
+}
+.clear_r {
+  margin-top: 1em;
+  border-top: 1px solid #eaeaea;
+}
+.clear_r * {
+  float:right;
+}
+/*** FORMULARIOS ***/
+form {
+  width:100%
+}
+form label, form .label {
+    display: block;
+    padding: 0.2em 0;
+    font-size: 0.9em;
+}
+form .doble {
+    display: flex;
+    /* justify-content: space-between; */
+    width: 100%;
+}
+form .doble .campo:first-child {
+  margin-right:2em;
+}
+form span {
+    font-size: 0.9em;
+}
+input {
+    border-radius: 3px;
+    border: 1px solid #ebedf2;
+    background: #f7f9fd;
+    padding: .7em 1.1em;
+    margin-bottom:1em;
+}
+input:hover {
+    border-color: #aeaeae;
+}
+input:focus {
+  border-color: #1394c9;
+  outline: 0;
+  background: white;
+  box-shadow: 0 2px 10px #0000001c;
+}
+input:focus:invalid {
+  border-color:orange;
+}
+.formulario {
+    margin: 1em 0;
+    overflow: hidden;
+   
+}
+.formulario h3 {
+  display:block;
+  border-bottom: 1.5px solid #2face0;
+  color: #1394c9;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.formulario .campos {
+  padding-top:1em;
+  display:flex;
+  align-items: flex-start;
+}
+.formulario aside {
+  padding-right:2em;
+}
+.formulario aside a {
+    cursor: pointer;
+    padding: 1em;
+    background: #ebebeb;
+    display:flex;
+    justify-content: center;
+    margin-bottom: 1em;
+    fill: #b4b6bb;
+    border: 1px solid #dfdfdf;
+    position:relative;
+    align-items: center;
+}
+.formulario aside a span {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  text-align: center;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: #00000057;
+  color: white;
+  transition: .2s ease;
+  font-weight: bold;
+  opacity: 0;
+}
+.formulario aside a:hover span {
+  opacity:1;
+}
+input#altura,input#peso {
+  width:6em;
+}
+input#email {
+    width: 120%;
+}
+.formulario .clear input {
+  float:right;
+}
+.formulario .slide {
+    display: flex;
+    width: 300%;
+    position: relative;
+    left:0;
+    transition: .5s ease;
+}
+.formulario .slide.step {
+  left: -100%;
+}
+.formulario .slide.step2 {
+  left: -200%;
+}
+.slide .item {
+    width: 100%;
+}
+
+
+/*** atividades ***/
+
+
+.atividades {
+  display:flex;
+  flex-flow: column;
+  padding: 0 1em;
+  width: 100%;
+}
+.item_act {
+    //max-height: 4em;
+    overflow: hidden;
+    border-radius: 8px;
+    margin: .2em 0;
+    border: 1px solid #e6e6e6;
+    transition:.3s ease;
+    width: 100%;
+}
+.item_act:hover, .item_act.expand {
+  box-shadow:0 3px 6px rgba(0,0,0,.08);
+  background: white;
+}
+.item_act.selecc {
+  background:#fafafa;
+}
+.item_act header {
+    display: flex;
+    height: 4em;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    width: 100%;
+}
+.item_act h3 {
+    border: 0;
+    //color: #888888;
+    padding: 0 1em;
+    transition:.2s;
+    width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
+
+
+
+.item_act header svg {
+  fill:#d6d6d6;
+  opacity:0;
+  display:none;
+  transition:.2s;
+  margin-right: 1em;
+}
+.item_act:hover header svg, .item_act.expand header svg {
+  opacity:1;
+}
+.item_act header svg:hover {
+  fill: #414141
+}
+.item_act.selecc header svg.check_icon {
+  fill:#81c784;
+  display:block;
+  opacity:1;
+}
+.item_act.selecc:hover header svg.check_icon {
+  display:none;
+}
+.item_act.expand {
+  //max-height: 40em;
+  background: white;
+  margin:1em 0;
+}
+.item_act.selecc:hover header svg.x_icon {
+  display:block;
+  opacity:1;
+}
+.item_act .clear_r {
+  border:none;
+  padding-right: 1em;
+}
+.importe {
+    background: #95d8f4;;
+    color: white;
+    box-shadow:0 3px 6px rgba(0,0,0,.08);
+    max-height: 30%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    padding: 1em;
+    border-radius: 8px;
+    border: 1px solid #5bbde5;
+    text-align: right;
+}
+.importe h3 {
+    font-size: 1em;
+    margin-bottom: .5em;
+    border-color: #73c4e6;
+}
+.importe #import {
+    font-size: 3em;
+}
+.importe #import::before {
+  font-size: 2rem;
+}
+.detalhes .precos {
+    gap: 10px;
+  padding: 5px;
+    display: flex;
+    margin: 0 1em 1em 1em;
+    align-items: center;
+}
+
+
+.blocked.horario tr {
+  pointer-events: none;
+}
+.inactive {
+  opacity: .6!important;
+  pointer-events: none;
+}
+.item figure {
+    border: 1px solid #e6e6e6;
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 1em 1.3em;
+    box-shadow:0 3px 6px rgba(0,0,0,.08);
+}
+.formy {
+    display: flex;
+    justify-content: center;
+    margin-bottom: .6em;
+}
+.formy div {
+    display: flex;
+    flex-flow: column;
+}
+.formy div:first-child {
+    text-align: right;
+    padding-right: 1em;
+    justify-content: center;
+    align-items: flex-end;
+}
+.formy div:first-child * {
+    font-weight: bold;
+    color: #58565f;
+}
+.formy div * {
+    height: 3em;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+}
+span.aclar {
+    font-style: italic;
+    font-size: 0.8em;
+    color: #6f6d74;
+}
+
+
+/* Esconde os detalhes por padrão */
+.detalhes {
+    display: none;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-top: 5px;
+    transition: max-height 0.3s ease-in-out;
+}
+
+
+/* Estiliza o cabeçalho para indicar que é clicável */
+.item_act header {
+    cursor: pointer;
+    background-color: #3865a6;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: background-color 0.3s;
+}
+
+
+.item_act header:hover {
+    background-color: #ccc;
+}
+
+/* Ícone de abrir e fechar */
+.chevron {
+    font-size: 16px;
+    transition: transform 0.3s ease-in-out;
+}
+
+
+/* Rotação do ícone quando aberto */
+.item_act.open .chevron {
+    transform: rotate(180deg);
+}
+
+
+/* Estiliza os headers com cores específicas */
+.item_act.lcs header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+.item_act.saf header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+.item_act.wo header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+.item_act.pm header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+.item_act.qc header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+.item_act.am header { background-color: white; color: black; transition:.2s; /*font-weight: bold;*/ font-size: 18px;}
+
+
+/* Torna os headers clicáveis */
+.item_act header {
+    cursor: pointer;
+    padding: 10px;
+    gap: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: left;
+    justify-content: flex-start;
+    transition: background-color 0.3s ease-in-out;
+}
+
+
+/* Efeito hover para cada um */
+.item_act.lcs header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+.item_act.saf header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+.item_act.wo header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+.item_act.pm header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+.item_act.qc header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+.item_act.am header:hover { background-color: rgba(127, 126, 126, 0.1); color: black;}
+
+
+.barra-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #d3d3d3; /* Cinza claro */
+  padding: 10px;
+  text-align: center;
+  z-index:5000;
+}
+
+
+#barra-progresso {
+  height: 20px;
+  width: 0;
+  background-color: #3865a6; /* Azul claro */
+  color: white;
+  line-height: 20px;
+  text-align: center;
+  transition: width 0.3s ease;
+}
+
+
+/* Adicionando um pouco de estilo para melhorar a aparência das perguntas */
+.pergunta-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+
+.pergunta-texto {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+
+.opcoes label {
+    display: inline-block;
+    margin-right: 15px;
+    font-size: 14px;
+}
+
+
+.motivo-container {
+    margin-top: 15px;
+    padding-top: 10px;
+    background-color: #f4f4f4;
+    border-top: 2px solid #ddd;
+}
+
+
+.motivo-container label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+
+
+.motivo-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    box-sizing: border-box;
+    min-height: 80px;
+}
+
+
+.motivo-textarea:focus {
+    border-color: #4A90E2; /* Cor azul para foco */
+    outline: none;
+}
+
+//Config. de área para contramedida
+
+.contramedida-container {
+    margin-top: 15px;
+    padding-top: 10px;
+    background-color: #f4f4f4;
+    border-top: 2px solid #ddd;
+}
+
+
+.contramedida-container label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+
+
+.contramedida-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    resize: vertical; /* Permite redimensionar verticalmente */
+    box-sizing: border-box;
+    min-height: 80px;
+}
+
+
+.contramedida-textarea:focus {
+    border-color: #4A90E2; /* Cor azul para foco */
+    outline: none;
+}
+
+/* Impede a seleção de texto na página */
+body {
+     background: white;
+    user-select: none;
+    -webkit-user-select: none; /* Para Safari */
+    -moz-user-select: none; /* Para Firefox */
+    -ms-user-select: none; /* Para IE/Edge */
+    scroll-behavior: smooth;
+}
+
+
+
+
+    body::-webkit-scrollbar {
+      display: none;
+
+
+    }
+
+
+#overlay {
+    position: fixed; /* Fixa a posição da sobreposição */
+    display: none; /* Oculta por padrão */
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0); /* Fundo semi-transparente */
+    z-index: 9999; /* Garante que a sobreposição fique acima de outros elementos */
+          }
+          #overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+          }
+
+
+.barra-azul {
+    width: 100%;
+    height: 4px;
+    background-color: blue;
+    margin: 10px 0;
+}
+
+.passo-texto {
+    color: #000000;
+    font-size: 20px; /* Aumenta o tamanho da fonte */
+    font-weight: bold; /* Deixa o texto em negrito */
+    text-transform: uppercase; /* Opcional: deixa o texto em maiúsculas */
+}
+
+.item_act {
+    cursor: pointer;
+}
+
+    </style>
+</head>
+<body>
+  <div id="overlay">
+    <div id="overlay-content"></div>
+  </div>
+<header id="cab">
+      <div class="maxw">
+        <img src="https://raw.githubusercontent.com/bonfimg1/fluxobd/refs/heads/main/WCM%20Icon.png" class="pilar-imagem2" alt="WCM">
+        <nav>
+          <a>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path class="heroicon-ui" d="M12 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm9 11a1 1 0 0 1-2 0v-2a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v2a1 1 0 0 1-2 0v-2a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v2z"/></svg>
+            <span id="user1">USUARIO</span>
+          </a>
+         <!-- <a href="#">Cerrar sesión</a>-->
+        </nav>
+      </div>
+    </header>
+
+
+</head>
+<body>
+
+    <div class="audit-re-container">
+        <label for="reauditado">RE do Auditado:</label>
+        <input type="text" id="reauditado" placeholder="Digite o RE aqui...">
+    </div>
+
+    <div class="area-auditada">
+        <label for="areaauditada">Área auditada:</label>
+        <input type="text" id="areaauditada" placeholder="Digite a área aqui...">
+    </div>
+
+    <div class="maxw content">
+
+
+      <!--<aside class="">
+        <nav>
+          <a class="activo" href="#">SAF</a>
+          <a href="#">AM</a>
+          <a href="#">WO</a>
+          <a href="#">PM</a>
+          <a href="#">QC</a>
+          <a href="#">LCS</a>
+          <a href="#">SAF</a>
+        </nav>
+      </aside>--:
+
+
+-->
+      <div class="corpo">
+                <div class="item">
+                  <!--<h3>Actions</h3>--><BR>
+                  <div class="campos">
+
+
+                    <div class="atividades">
+  
+    <div class="item_act saf">
+    <header>
+      <img src="https://raw.githubusercontent.com/RamonTorres98/whp/refs/heads/main/SAF%20(1).png" class="pilar-imagem1" alt="SAF">
+      SAFETY
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="SAF"></div>
+  </div>
+
+    <div class="item_act am">
+    <header>
+      <img src="https://raw.githubusercontent.com/RamonTorres98/whp/refs/heads/main/AM.png" class="pilar-imagem1" alt="AM">
+      AUTONOMOUS MAINTENANCE
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="AM"></div>
+  </div>
+
+  <div class="item_act wo">
+    <header>
+      <img src="https://raw.githubusercontent.com/RamonTorres98/whp/refs/heads/main/WO.png" class="pilar-imagem1" alt="wo">
+      WORKPLACE ORGANIZATION
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="WO"></div>
+  </div>
+
+
+  <div class="item_act pm">
+    <header>
+      <img src="https://raw.githubusercontent.com/RamonTorres98/whp/refs/heads/main/PM.png" class="pilar-imagem1" alt="pm">
+      PROFESSIONAL MAINTENANCE
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="PM"></div>
+  </div>
+
+
+  <div class="item_act qc">
+    <header>
+      <img src="https://raw.githubusercontent.com/RamonTorres98/whp/refs/heads/main/QC%20(1).png" class="pilar-imagem1" alt="QC">
+      QUALITY CONTROL
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="QC"></div>
+  </div>
+
+  <div class="item_act lcs">
+    <header>
+  <img src="https://raw.githubusercontent.com/bonfimg1/fluxobd/refs/heads/main/lcs.png" class="pilar-imagem1" alt="LCS">
+      LOGISTICS AND CUSTOMER SERVICE
+      <span class="resumen"></span>
+      <div class="check"></div>
+    </header>
+    <div class="detalhes" id="LCS"></div>
+    </div>
+
+
+<div class="barra-inferior">
+  <div id="barra-progresso"></div>
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+                  </div>
+
+
+                  <div class="clear_r">
+                    <a href="#" class="boton_ok" onclick="salvarRespostas()">Confirmar</a>
+
+
+                    <a href="#" class="boton_pas" onclick="salvarLocalmente()">Salvar</a>
+                  </div>
+
+
+                </div>
+
+
+              </div>
+          </div>
+
+
+          </p>
+      </div>
+
+
+    <script>
+
+
+let respostasTemp = []; // Armazena temporariamente as respostas
+
+// Teste de botão que oculta demais pilares
+
+document.addEventListener("DOMContentLoaded", function () {
+    let itens = document.querySelectorAll(".item_act");
+    let pilarAtual = null;
+
+    itens.forEach(item => {
+        item.addEventListener("click", function (event) {
+            if (!event.target.closest("header")) return;
+
+            // Salva temporariamente as respostas antes de ocultar os pilares
+            atualizarRespostasTemporarias();
+
+            let pilarSelecionado = this.querySelector(".detalhes").id;
+
+            if (pilarAtual === pilarSelecionado) {
+                itens.forEach(outroItem => {
+                    outroItem.style.display = "block";
+                });
+                pilarAtual = null;
+            } else {
+                itens.forEach(outroItem => {
+                    let pilarID = outroItem.querySelector(".detalhes").id;
+                    if (pilarID !== pilarSelecionado) {
+                        outroItem.style.display = "none";
+                    } else {
+                        outroItem.style.display = "block";
+                    }
+                });
+
+                pilarAtual = pilarSelecionado;
+            }
+        });
+    });
+});
+
+
+// Função que salva temporariamente o RE do coitado sendo auditado:
+document.getElementById("reauditado").addEventListener("input", function() {
+    localStorage.setItem("REauditado", this.value);
+});
+
+// Função que salva temporariamente o RE do coitado sendo auditado:
+document.getElementById("areaauditada").addEventListener("input", function() {
+    localStorage.setItem("AREAauditada", this.value);
+});
+
+// Recupera o nome salvo ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    let nomeSalvo = localStorage.getItem("REauditado");
+    if (nomeSalvo) {
+        document.getElementById("reauditado").value = nomeSalvo;
+    }
+});
+
+// Recupera o nome salvo ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    let nomeSalvo = localStorage.getItem("AREAauditada");
+    if (nomeSalvo) {
+        document.getElementById("areaauditada").value = nomeSalvo;
+    }
+});
+
+
+// Antiga função de lista
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".item_act header").forEach(header => {
+        header.addEventListener("click", function() {
+            let parent = this.parentElement; // Obtém o item_act pai
+            let detalhes = parent.querySelector(".detalhes");
+
+
+            if (detalhes.style.display === "none" || detalhes.style.display === "") {
+                detalhes.style.display = "block";
+                parent.classList.add("open");
+            } else {
+                detalhes.style.display = "none";
+                parent.classList.remove("open");
+            }
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".step-header").forEach(header => {
+        header.addEventListener("click", function () {
+            let stepContainer = this.closest(".step-container"); // Obtém o step-container mais próximo
+            let allSteps = stepContainer.parentElement.querySelectorAll(".step-container"); // Obtém todos os steps dentro do mesmo pilar
+            let stepContent = stepContainer.querySelector(".step-content"); // Obtém o conteúdo do step clicado
+
+            if (!stepContent) return; // Se não existir .step-content, não faz nada
+
+            allSteps.forEach(step => {
+                let content = step.querySelector(".step-content");
+
+                if (content) {
+                    if (step === stepContainer) {
+                        content.style.display = content.style.display === "block" ? "none" : "block";
+                    } else {
+                        content.style.display = "none"; // Oculta os outros Steps
+                    }
+                }
+            });
+        });
+    });
+});
+
+
+
+  function scrollToNext(next) {
+    const nextElement = document.getElementById(next);
+    if (nextElement) {
+        // Posição do próximo elemento
+        const targetPosition = nextElement.getBoundingClientRect().top + window.scrollY;
+        let startPosition = window.scrollY;
+        let distance = targetPosition - startPosition;
+        let duration = 500; // Duração da animação em milissegundos
+
+
+        // Ajuste para parar um pouco acima do próximo elemento
+        const offset = 55; // Ajuste de distância para cima
+        let adjustedTargetPosition = targetPosition - offset;
+
+
+        let startTime = null;
+
+
+        function animateScroll(timestamp) {
+            if (!startTime) startTime = timestamp;
+            let progress = timestamp - startTime;
+            let scrollAmount = Math.min(progress / duration, 1) * distance;
+
+
+            // Rolagem suave até a posição ajustada
+            window.scrollTo(0, startPosition + scrollAmount);
+
+
+            if (progress < duration) {
+                requestAnimationFrame(animateScroll);
+            } else {
+                // Quando a animação terminar, ajustar para a posição final desejada
+                window.scrollTo(0, adjustedTargetPosition);
+            }
+        }
+
+
+       // requestAnimationFrame(animateScroll);
+    }
+}
+
+
+
+
+
+if (typeof respostas !== "undefined") {
+    respostas.length = 0; // Limpa o array sem redeclará-lo
+} else {
+    var respostas = []; // Declara apenas se ainda não existir
+}
+
+// Chama a função ao carregar a página
+document.addEventListener("DOMContentLoaded", carregarPerguntas);
+
+function toggleTitulo(id) {
+    let tituloAtual = document.getElementById(id);
+
+    // Alterna a visibilidade do título atual
+    tituloAtual.style.display = (tituloAtual.style.display === "block") ? "none" : "block";
+
+}
+
+
+function carregarPerguntas() {
+    var numb = 1;
+    var numbOcult = 0;
+    var ultimoStepAberto = null; // Armazena o último step aberto
+    
+    google.script.run.withSuccessHandler(function(dados) {
+        let containers = {
+            "AM": document.getElementById("AM"),
+            "WO": document.getElementById("WO"),
+            "PM": document.getElementById("PM"),
+            "QC": document.getElementById("QC"),
+            "LCS": document.getElementById("LCS"),
+            "SAF": document.getElementById("SAF"),
+        };
+
+        // Limpa os containers antes de adicionar novas perguntas
+        Object.values(containers).forEach(container => {
+            if (container) container.innerHTML = "";
+        });
+
+        let ultimoPasso = null;
+        let stepContainers = {}; // Guarda os containers dos Steps
+
+        dados.forEach((item, index) => {
+            let pilar = item.Pilar;
+            let container = containers[pilar];
+            if (!container) return;
+
+            // Se o passo mudou, cria um novo container para ele
+            if (item.Passo !== ultimoPasso) {
+                let stepDiv = document.createElement("div");
+                stepDiv.classList.add("step-container");
+                stepDiv.id = "step_" + item.Passo;
+                stepDiv.style.display = "none"; // Inicialmente oculto
+
+                let barraAzul = document.createElement("div");
+                barraAzul.classList.add("passo-barra");
+                barraAzul.innerHTML = `<i class="fas fa-arrow-right"></i> <span class="passo-texto" id="titulo${numb}" onclick="toggleTitulo('step_${item.Passo}')">${item.Passo}</span>`;
+
+                // Evento para abrir e fechar os steps
+                barraAzul.addEventListener("click", function () {
+                    if (ultimoStepAberto && ultimoStepAberto !== stepDiv) {
+                        ultimoStepAberto.style.display = "none"; // Fecha o último aberto
+                    }
+
+                    let isVisible = stepDiv.style.display === "block";
+                    stepDiv.style.display = isVisible ? "none" : "block";
+                    ultimoStepAberto = isVisible ? null : stepDiv; // Atualiza o último aberto
+                });
+
+                numb += 1;
+                numbOcult += 1;
+
+                container.appendChild(barraAzul);
+                container.appendChild(stepDiv);
+                stepContainers[item.Passo] = stepDiv;
+                ultimoPasso = item.Passo;
+            }
+
+            let perguntaDiv = document.createElement("div");
+            perguntaDiv.classList.add("pergunta-container");
+            perguntaDiv.id = "pergunta_" + item["Nº"];
+
+            let imagemHTML = (pilar === "LCS")
+                ? `<img src="https://raw.githubusercontent.com/bonfimg1/fluxobd/refs/heads/main/lcs.png" class="pilar-imagem" alt="LCS">`
+                : "";
+
+            perguntaDiv.innerHTML = `
+                ${imagemHTML}
+                <div class="pergunta-texto" id="${index+1}"> <strong>${item["Nº"]}.</strong> ${item.Pergunta}</div>
+                <div class="opcoes">
+                    <label>
+                        <input type="radio" id="sim_${item["Nº"]}${pilar}" name="resposta_${item["Nº"]}${pilar}" value="Sim">
+                        Sim
+                    </label>
+                    <label>
+                        <input type="radio" id="nao_${item["Nº"]}${pilar}" name="resposta_${item["Nº"]}${pilar}" value="Não">
+                        Não
+                    </label>
+                </div>
+                <div id="motivo_${item["Nº"]}${pilar}" class="motivo-container" style="display:none;">
+                    <label for="motivo">Por que?</label>
+                    <textarea id="motivo-texto_${item["Nº"]}${pilar}" rows="4" placeholder="Digite o motivo..." class="motivo-textarea"></textarea>
+                </div>
+                <div id="contramedida_${item["Nº"]}${pilar}" class="contramedida-container" style="display:none;">
+                    <label for="contramedida">Contramedida:</label>
+                    <textarea id="contramedida-texto_${item["Nº"]}${pilar}" rows="4" placeholder="Digite a contramedida..." class="contramedida-textarea"></textarea>
+                </div>
+            `;
+
+            stepContainers[item.Passo].appendChild(perguntaDiv);
+
+            document.getElementById(`nao_${item["Nº"]}${pilar}`).addEventListener('change', function() {
+                document.getElementById(`motivo_${item["Nº"]}${pilar}`).style.display = 'block';
+            });
+
+            document.getElementById(`sim_${item["Nº"]}${pilar}`).addEventListener('change', function() {
+                document.getElementById(`motivo_${item["Nº"]}${pilar}`).style.display = 'none';
+            });
+
+            document.getElementById(`nao_${item["Nº"]}${pilar}`).addEventListener('change', function() {
+                document.getElementById(`contramedida_${item["Nº"]}${pilar}`).style.display = 'block';
+            });
+
+            document.getElementById(`sim_${item["Nº"]}${pilar}`).addEventListener('change', function() {
+                document.getElementById(`contramedida_${item["Nº"]}${pilar}`).style.display = 'none';
+            });
+
+            // Captura as respostas quando uma opção de resposta é selecionada
+            document.querySelectorAll(`input[name="resposta_${item["Nº"]}${pilar}"]`).forEach(input => {
+                input.addEventListener('change', function() {
+                    let resposta = {
+                        perguntaId: pilar + "-" + item["Nº"],
+                        resposta: this.value,
+                        motivo: "",
+                        contramedida: "",
+                        pergunta: item.Pergunta
+                    };
+
+                    // Se a resposta for "Não", captura o motivo e contramedida depois
+                    if (this.value === "Não") {
+                        let motivoTextArea = document.getElementById(`motivo-texto_${item["Nº"]}${pilar}`);
+                        
+                        motivoTextArea.addEventListener('input', function() {
+                            let respostaExistente = respostas.find(r => r.perguntaId === resposta.perguntaId);
+                            if (respostaExistente) {
+                                respostaExistente.motivo = this.value; // Atualiza o motivo
+                            }
+                        
+                        });
+                    }
+
+                    // Se a resposta for "Não", captura o motivo e contramedida depois
+                    if (this.value === "Não") {
+                        let contramedidaTextArea = document.getElementById(`contramedida-texto_${item["Nº"]}${pilar}`);
+
+                        contramedidaTextArea.addEventListener('input', function() {
+                            let respostaExistente = respostas.find(r => r.perguntaId === resposta.perguntaId);
+                            if (respostaExistente) {
+                                respostaExistente.contramedida = this.value; // Atualiza a contramedida
+                            }
+                        });
+                    }
+
+                    // Adicionar ou atualizar no array de respostas
+                    let existe = respostas.find(r => r.perguntaId === resposta.perguntaId);
+                    if (existe) {
+                        existe.resposta = resposta.resposta;
+                    } else {
+                        respostas.push(resposta);
+                    }
+
+                    console.log(respostas); // Exibe o array atualizado no console
+                });
+            });
+        });
+
+    }).getDados();
+}
+
+
+
+function ativarOcultacaoSteps() {
+    let steps = document.querySelectorAll(".step-header");
+
+    steps.forEach(step => {
+        step.addEventListener("click", function () {
+            let stepSelecionado = this.getAttribute("data-step");
+
+            // Ocultar todas as perguntas
+            document.querySelectorAll(".pergunta-container").forEach(pergunta => {
+                pergunta.style.display = "none";
+            });
+
+            // Mostrar apenas as perguntas que pertencem ao Step selecionado
+            document.querySelectorAll(".step-header").forEach(s => {
+                let perguntasDoStep = s.nextElementSibling;
+                
+                if (perguntasDoStep && perguntasDoStep.classList.contains("pergunta-container")) {
+                    if (s.getAttribute("data-step") === stepSelecionado) {
+                        perguntasDoStep.style.display = "block";
+                    }
+                }
+            });
+
+            // Remover classe ativo de todos os steps
+            steps.forEach(s => s.classList.remove("ativo"));
+
+            // Adicionar classe ativo ao step clicado
+            this.classList.add("ativo");
+        });
+    });
+}
+
+// Chamar a função após o carregamento do DOM
+document.addEventListener("DOMContentLoaded", ativarOcultacaoSteps);
+
+
+
+
+
+/*Função para melhorar estética dos títulos de Step em formato de lista:*/
+ function toggleStep(element) {
+    let perguntas = element.nextElementSibling; // Encontra o conteúdo do step
+    let icon = element.querySelector(".step-icon");
+
+    // Fecha todos os outros Steps antes de abrir o novo
+    document.querySelectorAll(".step-content").forEach(content => {
+        if (content !== perguntas) {
+            content.style.display = "none"; // Fecha os outros steps
+            content.previousElementSibling.classList.remove("open"); // Remove a classe aberta
+            content.previousElementSibling.querySelector(".step-icon").textContent = "+"; // Reseta o ícone
+        }
+    });
+
+    // Alterna o Step clicado
+    if (perguntas.style.display === "none" || perguntas.style.display === "") {
+        perguntas.style.display = "block";
+        element.classList.add("open");
+        icon.textContent = "↓"; // Ícone aberto
+    } else {
+        perguntas.style.display = "none";
+        element.classList.remove("open");
+        icon.textContent = "+"; // Ícone fechado
+    }
+}
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let totalRespondidas = 0;
+    let totalPerguntas = 0; // Para contar o total de perguntas
+    const barraProgresso = document.getElementById("barra-progresso");
+
+
+    // Função para atualizar a barra de progresso
+    function atualizarBarra() {
+        if (totalPerguntas === 0) return; // Evita divisão por zero
+        const porcentagem = (totalRespondidas / totalPerguntas) * 100;
+        barraProgresso.style.width = `${porcentagem}%`; // Atualiza a largura da barra
+    }
+
+
+    // Função para contar as respostas
+    function contarRespostas() {
+        const radios = document.querySelectorAll('input[type="radio"]:checked');
+        totalRespondidas = radios.length; // Conta as respostas selecionadas
+        atualizarBarra(); // Atualiza a barra de progresso
+    }
+
+
+    // Usar MutationObserver para monitorar mudanças no DOM
+    const observer = new MutationObserver(function() {
+        totalPerguntas = document.querySelectorAll('.pergunta-container').length; // Contagem dinâmica de perguntas
+        contarRespostas(); // Recalcular as respostas e atualizar a barra
+    });
+
+
+    // Configurar o observer para observar mudanças nas perguntas
+    observer.observe(document.querySelector('.atividades'), {
+        childList: true, // Detecta a adição de novas perguntas
+        subtree: true     // Observa elementos dentro de .atividades
+    });
+
+
+    // Adicionando evento de change para os inputs de tipo "radio"
+    document.body.addEventListener('change', function(event) {
+        if (event.target && event.target.type === 'radio') {
+            contarRespostas(); // Conta as respostas sempre que um radio é alterado
+        }
+    });
+
+
+    // Inicializa a barra de progresso após um atraso de 4000ms
+    function inicializarProgresso() {
+        setTimeout(() => {
+            totalPerguntas = document.querySelectorAll('.pergunta-container').length; // Inicializa a contagem de perguntas
+            contarRespostas(); // Conta as respostas e atualiza a barra imediatamente
+        }, 4000); // Atraso de 4000ms (4 segundos)
+    }
+
+
+
+
+
+    // Espera o carregamento completo das perguntas antes de inicializar
+    window.onload = function() {
+        inicializarProgresso(); // Chama a função para configurar a barra de progresso corretamente após 4 segundos
+    };
+});
+
+
+
+
+
+
+
+
+var emailAtivo;
+
+
+function start() {
+       google.script.run.withSuccessHandler(function(user) {
+
+
+        emailAtivo = user;
+
+
+        console.log(emailAtivo)
+
+
+        let nome = emailAtivo.split('@')[0].split('_')[0];
+        let nomeTag = nome.charAt(0).toUpperCase() + nome.slice(1).toUpperCase();
+       
+        //document.getElementById("user1").value = nome.charAt(0).toUpperCase() + nome.slice(1).toLowerCase();
+        // Atualiza o conteúdo do elemento com ID "user1"
+       
+        //document.getElementById("user2").textContent = nomeTag;
+
+
+        let nomeCompleto = user.split('@')[0].replace(/_/g, ' ');
+        nomeCompleto = nomeCompleto.replace(/[\d_]|@whirlpool\.com|\d+/g, '');
+
+
+        upNomeFull = nomeCompleto.charAt(0).toUpperCase() + nomeCompleto.slice(1).toUpperCase();
+
+
+        document.getElementById("user1").textContent = upNomeFull; //nomeTag
+   
+      }).getUser();
+    }
+
+
+    start()
+
+//Nova função para salvar respostas em cache:
+
+function atualizarRespostasTemporarias() {
+    respostasTemp = respostas.map(resposta => {
+        let motivoTextArea = document.getElementById(`motivo-texto_${resposta.perguntaId}`);
+        let contramedidaTextArea = document.getElementById(`contramedida-texto_${resposta.perguntaId}`);
+        return {
+            ...resposta,
+            motivo: motivoTextArea ? motivoTextArea.value.trim() : resposta.motivo
+        };
+        return {
+            ...resposta,
+            contramedida: contramedidaTextArea ? contramedidaTextArea.value.trim() : resposta.contramedida
+        };
+
+    });
+}
+
+document.getElementById("botao-salvar").addEventListener("click", function () {
+    atualizarRespostasTemporarias(); // Garante que respostasTemp esteja atualizado
+    localStorage.setItem("respostasSalvas", JSON.stringify(respostasTemp));
+    alert("Respostas salvas com sucesso!");
+});
+
+
+function atualizarRespostasTemporarias() {
+    console.log("Atualizando respostas temporárias...");
+    console.log("Respostas antes da atualização:", respostas);
+
+    if (!respostas || respostas.length === 0) {
+        console.error("Erro: respostas não carregadas!");
+        return;
+    }
+
+    respostasTemp = respostas.map(resposta => {
+        let motivoTextArea = document.getElementById(`motivo-texto_${resposta.perguntaId}`);
+        let contramedidaTextArea = document.getElementById(`contramedida-texto_${resposta.perguntaId}`);
+        return {
+            ...resposta,
+            motivo: motivoTextArea ? motivoTextArea.value.trim() : resposta.motivo
+        };
+        return {
+            ...resposta,
+            contramedida: contramedidaTextArea ? contramedidaTextArea.value.trim() : resposta.contramedida
+        };
+    });
+
+    console.log("Respostas temporárias atualizadas:", respostasTemp);
+}
+
+
+
+function carregarRespostasSalvas() {
+    setTimeout(() => {
+        let respostasSalvas = localStorage.getItem("respostasSalvas");
+
+
+        if (respostasSalvas) {
+            respostas = JSON.parse(respostasSalvas); // Converte JSON para array
+
+
+            respostas.forEach(resposta => {
+    // Exemplo de como o ID é gerado para o radio 'sim' e 'não' com base no perguntaId
+    let pilar = resposta.perguntaId.split("-")[0]; // Exemplo para pegar o pilar da perguntaId (se necessário)
+    let numero = resposta.perguntaId.split("-")[1]; // Exemplo para pegar o número da perguntaId (se necessário)
+   
+    let perguntaIdSim = `sim_${numero}${pilar}`;
+    let perguntaIdNao = `nao_${numero}${pilar}`;
+
+
+    console.log("ID Sim gerado:", perguntaIdSim);
+    console.log("ID Não gerado:", perguntaIdNao);
+
+
+    let radioSim = document.getElementById(perguntaIdSim);
+    let radioNao = document.getElementById(perguntaIdNao);
+
+
+    // Preenche os radio buttons (Sim e Não)
+    if (resposta.resposta === "Sim" && radioSim) {
+        radioSim.checked = true;
+        radioSim.click(); // Simula o clique no botão de rádio 'Sim'
+    } else if (resposta.resposta === "Não" && radioNao) {
+        radioNao.checked = true;
+        radioNao.click(); // Simula o clique no botão de rádio 'Não'
+    }
+
+
+    // Se houver motivo, exibe e preenche o campo de motivo
+    let motivoTextArea = document.getElementById(`motivo-texto_${resposta.perguntaId.replace("-", "")}`);
+    let motivoContainer = document.getElementById(`motivo_${resposta.perguntaId.replace("-", "")}`);
+    let contramedidaTextArea = document.getElementById(`contramedida-texto_${resposta.perguntaId.replace("-", "")}`);
+    let contramedidaContainer = document.getElementById(`contramedida_${resposta.perguntaId.replace("-", "")}`);
+   
+    if (motivoContainer && motivoTextArea) {
+        motivoContainer.style.display = "block"; // Exibe o campo de motivo
+        motivoTextArea.value = resposta.motivo;  // Preenche o campo de motivo
+    }
+    if (contramedidaContainer && contramedidaTextArea) {
+        contramedidaContainer.style.display = "block"; // Exibe o campo de contramedida
+        contramedidaTextArea.value = resposta.contramedida;  // Preenche o campo de contramedida
+    }
+});
+
+
+            console.log("Respostas recuperadas e visualmente atualizadas:", respostas);
+        }
+    }, 5000); // Aguarda 1,5 segundos antes de executar
+}
+
+carregarRespostasSalvas()
+/*document.addEventListener("click", openFullscreen);
+document.addEventListener("touchstart", openFullscreen); // Para dispositivos móveis
+
+
+function openFullscreen() {
+    let elem = document.documentElement;
+
+
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari e Opera
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // Internet Explorer
+        elem.msRequestFullscreen();
+    }
+
+
+
+
+}*/
+
+
+
+
+
+
+    function bloquearTela() {
+            document.getElementById('overlay').style.display = 'block';
+          }
+   
+
+
+
+
+function refreshApp(newHtml) {
+            document.open();
+            document.write(newHtml);
+            document.close();
+    }
+
+
+//carregarRespostasSalvas()
+
+
+function salvarRespostas() {
+    let todasRespondidas = true; // Flag para verificar se todas foram respondidas
+
+    let reauditado = document.getElementById("reauditado").value
+    let areaauditada = document.getElementById("areaauditada").value
+
+    console.log(reauditado)
+    console.log(areaauditada)
+
+
+    // Atualiza os motivos e contramedidas antes de enviar e verifica se todas foram respondidas
+    respostas.forEach(resposta => {
+        if (!resposta.resposta) { // Se alguma resposta estiver vazia
+            todasRespondidas = false;
+        } else if (resposta.resposta === "Não") { // Se a resposta for "Não", verifica o motivo e contramedida
+            let motivoTextArea = document.getElementById(`motivo-texto_${resposta.perguntaId}`);
+            let contramedidaTextArea = document.getElementById(`contramedida-texto_${resposta.perguntaId}`);
+            if (motivoTextArea) {
+                resposta.motivo = motivoTextArea.value.trim(); // Pega o motivo digitado
+                if (!resposta.motivo) { // Se não tiver motivo, não deixa salvar
+                    todasRespondidas = false;
+                }
+            } else {
+                todasRespondidas = false; // Se não encontrar o campo do motivo
+            }
+            if (contramedidaTextArea) {
+                resposta.contramedida = contramedidaTextArea.value.trim(); // Pega a contramedida digitado
+                if (!resposta.contramedida) { // Se não tiver contramedida, não deixa salvar
+                    todasRespondidas = false;
+                }
+            } else {
+                todasRespondidas = false; // Se não encontrar o campo da contramedida
+            }
+        }
+    });
+
+
+    /*if (!todasRespondidas) {
+        //alert("Por favor, responda todas as perguntas antes de salvar.");
+        Swal.fire({
+                          title: 'AVISO',
+                          text: 'Por favor, responda todas as perguntas antes de registrar! ¹',
+                          icon: 'warning',
+                          showCancelButton: false,
+                          confirmButtonColor: '#d33',
+                          confirmButtonText: 'OK',
+                          backdrop: false
+                        });
+        return; // Cancela o envio se houver respostas em branco
+    }*/
+
+
+    console.log("Respostas finais:", respostas); // Debug para conferir antes de enviar
+
+
+    google.script.run.withSuccessHandler(function(response) {
+        localStorage.clear(); // Remove todos os itens armazenados no localStorage
+
+
+        if (response) {
+            limparEresetar(); // Chama a função para resetar tudo
+        } else {
+            alert("Erro ao salvar as respostas.");
+        }
+    }).saveToSheetCheck(emailAtivo, respostas, reauditado, areaauditada);
+}
+
+
+function desbloquearTela() {
+    document.getElementById('overlay').style.display = 'none';
+    Swal.fire({
+        title: 'CONCLUÍDO',
+        text: 'Auditoria enviada com sucesso!',
+        icon: 'success',
+        showCancelButton: false,
+        confirmButtonColor: '#34ebc9',
+        confirmButtonText: 'OK',
+        backdrop: false
+    }).then((result) => {
+        google.script.run.withSuccessHandler(refreshApp).getNewHtml();
+    });
+}
+
+
+function limparEresetar() {
+    bloquearTela();
+
+
+    let timerInterval;
+    Swal.fire({
+        title: "Registrando!",
+        html: "<b></b> kbps.",
+        timer: 10000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+                timer.textContent = `${Swal.getTimerLeft()}`;
+            }, 200);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        }
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("Fechado por timer");
+        }
+        desbloquearTela();
+    });
+}
+
+
+
+
+
+
+    </script>
+
+
+</body>
+</html>
