@@ -73,7 +73,7 @@ let optionsLocaisJoinville = JSON.stringify(getOption("C2:C").map(d=> "<option>"
 let optionsLocaisManaus = JSON.stringify(getOption("B2:B").map(d=> "<option>"+ d + "</option>").join(""));
 
 
-function saveToSheetCheck(emailAtivo, respostas, areaauditada) {
+function saveToSheetCheck(emailAtivo, respostas, areaauditada, plantaauditada) {
   var dataFormatada = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yy");
 
   // Abre a planilha pelo URL
@@ -91,11 +91,11 @@ function saveToSheetCheck(emailAtivo, respostas, areaauditada) {
         // Se a aba não existir, cria uma nova
         if (!sheet) {
             sheet = ss.insertSheet(aba);
-            sheet.appendRow(["Data","E-mail","Área auditada","Nº Pergunta","Resposta","Motivo","Contramedida"]); // Cabeçalhos
+            sheet.appendRow(["Data","E-mail","Área auditada","Nº Pergunta","Resposta","Motivo","Contramedida","Planta"]); // Cabeçalhos
         }
 
         // Adiciona a linha de dados na aba correspondente, incluindo o RE do auditado
-        var row = [dataFormatada, emailAtivo, areaauditada, resposta.pergunta, resposta.resposta, resposta.motivo, resposta.contramedida];
+        var row = [dataFormatada, emailAtivo, areaauditada, resposta.pergunta, resposta.resposta, resposta.motivo, resposta.contramedida, plantaauditada];
         sheet.appendRow(row);
     });
 
