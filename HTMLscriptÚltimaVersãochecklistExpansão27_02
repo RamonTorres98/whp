@@ -1259,6 +1259,7 @@ body {
 
 
 let respostas = []; // Armazena temporariamente as respostas
+var plantaauditada = ""
 
 
 function plantaSelecionada(unidade){
@@ -1280,6 +1281,7 @@ function plantaSelecionada(unidade){
 
           document.getElementById("class-areaauditada").style.display = 'block';
           document.getElementById("class-plantaauditada").style.display = 'none';
+          plantaauditada = unidade
 
 }
 
@@ -2006,7 +2008,7 @@ function salvarRespostas() {
         } else {
             //alert("Erro ao salvar as respostas.");
         }
-    }).saveToSheetCheck(emailAtivo, respostas, areaauditada);
+    }).saveToSheetCheck(emailAtivo, respostas, areaauditada, plantaauditada);
 
 }
 
