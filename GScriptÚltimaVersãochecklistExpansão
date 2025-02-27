@@ -1,0 +1,109 @@
+// Ultima atualização 27/02/2025
+
+var url = "1m1n23MEZdJJaYuejteGCz8PFJQktnAH-dItmp29_Cvk";
+
+function doGet() { // CÓDIGO QUE FAZ O BACKEND ENTENDER QUE INDEX É UMA PAGINA E DEVE SER INICIADA.
+  try {
+    var htmlOutput = HtmlService.createTemplateFromFile('index');
+    return htmlOutput.evaluate().setTitle("WCM").setFaviconUrl("https://www.whirlpool.com/content/dam/business-unit/global-assets/images/favicons/favicon.ico").setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (error) {
+    var htmlOutput = HtmlService.createTemplateFromFile('error');
+    return htmlOutput.evaluate().setTitle("WCM").setFaviconUrl("https://www.whirlpool.com/content/dam/business-unit/global-assets/images/favicons/favicon.ico").setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
+}
+
+function getUser(){
+  const user = Session.getActiveUser().getEmail();
+  //console.log('Active User: ' + user)
+  return user;
+}
+
+function getNewHtml(e) {
+      var html = HtmlService
+        .createTemplateFromFile('index') // uses templated html
+        .evaluate()
+        .getContent();
+return html;}
+
+
+function getDados() {
+  //const user = Session.getActiveUser().getEmail(); // email
+  const planilha = SpreadsheetApp.openById('1m1n23MEZdJJaYuejteGCz8PFJQktnAH-dItmp29_Cvk');
+  const sheet = planilha.getSheetByName('DB_Questions');
+  var dataRange = sheet.getRange("A2:AA" + sheet.getLastRow()); // Ajuste o intervalo conforme necessário
+  var data = dataRange.getValues();
+  var tabelaIndustrial = [];
+  
+  data.forEach(function(row) {
+    tabelaIndustrial.push({
+      "Pilar": row[0].toString(),
+      "Passo": row[1].toString(),
+      "Nº": row[2].toString(),
+      "Pergunta": row[3].toString(),
+      "Contramedida": row[4].toString(),
+      "Key": row[0].toString() + "-" + row[2].toString(),
+    });
+  });
+
+  console.log(tabelaIndustrial);
+  return tabelaIndustrial; // Retorna os dados filtrados se encontrar
+}
+
+function getOption(range)
+{
+  var ss = SpreadsheetApp.openById(url);
+  var sheet = ss.getSheetByName("Locais RCL");
+  var data = sheet.getRange(range).getValues().filter(d=> d[0] !== "");
+
+  var newArr = data.map(d => d[0]);
+  var uniqueList = [];
+  newArr.map(r => {
+    if(uniqueList.indexOf(r)===-1)
+    {
+      uniqueList.push(r);
+    }
+  });
+
+  Logger.log(uniqueList.sort());
+  return uniqueList.sort();
+}
+
+let optionsLocaisRioClaro = JSON.stringify(getOption("A2:A").map(d=> "<option>"+ d + "</option>").join(""));
+let optionsLocaisJoinville = JSON.stringify(getOption("C2:C").map(d=> "<option>"+ d + "</option>").join(""));
+let optionsLocaisManaus = JSON.stringify(getOption("B2:B").map(d=> "<option>"+ d + "</option>").join(""));
+
+
+function saveToSheetCheck(emailAtivo, respostas, areaauditada) {
+  var dataFormatada = Utilities.formatDate(new Date(), "America/Sao_Paulo", "dd/MM/yy");
+
+  // Abre a planilha pelo URL
+  var ss = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/1m1n23MEZdJJaYuejteGCz8PFJQktnAH-dItmp29_Cvk/edit");
+
+  try {
+    
+    respostas.forEach(resposta => {
+        var partes = resposta.perguntaId.split("-");
+        var aba = partes[0]; // Pilar (Ex: LCS, WO, etc.)
+        var numeroPergunta = partes[1]; // Número da pergunta
+
+        var sheet = ss.getSheetByName(aba);
+
+        // Se a aba não existir, cria uma nova
+        if (!sheet) {
+            sheet = ss.insertSheet(aba);
+            sheet.appendRow(["Data","E-mail","Área auditada","Nº Pergunta","Resposta","Motivo","Contramedida"]); // Cabeçalhos
+        }
+
+        // Adiciona a linha de dados na aba correspondente, incluindo o RE do auditado
+        var row = [dataFormatada, emailAtivo, areaauditada, resposta.pergunta, resposta.resposta, resposta.motivo, resposta.contramedida];
+        sheet.appendRow(row);
+    });
+
+    return true;
+} catch (e) {
+    Logger.log("ERRO DE REGISTRO: " + e);
+    return false;
+}
+
+}
+
